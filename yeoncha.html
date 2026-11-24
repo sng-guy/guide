@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="입사일과 마지막 재직일을 넣으면 연차 개수와 사직서에 적을 날짜를 알려 드려요. 이인재 노무사">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="노무법인 시너지">
+<meta property="og:title" content="퇴사 날짜 하루 차이로 연차 15개가 갈립니다">
+<meta property="og:description" content="입사일과 마지막 재직일을 넣으면 연차 개수와 사직서에 적을 날짜를 알려 드려요. 이인재 노무사">
+<meta property="og:url" content="https://guide.snghr.com/yeoncha">
+<meta property="og:image" content="https://guide.snghr.com/og.png">
+<style>[hidden]{display:none!important}</style>
+<title>연차·퇴사일 계산기</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 레이아웃: 폰 한 손 세로 한 줄. 위 네이비 띠(무엇을 하는 도구인지) → 입력 → 판정 한 줄 → 날짜 두 칸 → 숫자 세 칸 → 사직서 한 줄 → 생기는 날 목록 → 주의 → 상담 */
+:root{
+  --navy:#14284B; --coral:#FF6A3D; --coral-ink:#C2461F;
+  --bg:#F4F6FA; --surface:#FFFFFF; --tint:#EEF2F8; --ink:#16233A; --heading:#14284B; --sub:#5B6B82; --line:#D8DFEA;
+  --hero-bg:#14284B; --hero-ink:#FFFFFF; --hero-sub:#C9D3E4;
+  --good:#0F8A5C; --good-bg:#E7F6EF; --bad:#C2392A; --bad-bg:#FBEBE8; --warn:#A85A0C; --warn-bg:#FCF1E3; --info:#2F5FB3; --info-bg:#E9F1FD;
+  --font:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
+  --r:12px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0C1422; --surface:#142036; --tint:#1A2944; --ink:#E6ECF5; --heading:#F1F4F9; --sub:#9AA9BF; --line:#263552;
+  --hero-bg:#13213C; --hero-ink:#F1F4F9; --hero-sub:#9FB0CA; --coral:#FF7A50; --coral-ink:#FF9A78;
+  --good:#45CE96; --good-bg:#11372A; --bad:#FF8270; --bad-bg:#3A1B17; --warn:#F2AA5E; --warn-bg:#382813; --info:#8DB4F2; --info-bg:#172C4D;
+  color-scheme:dark; } }
+:root[data-theme="dark"]{
+  --bg:#0C1422; --surface:#142036; --tint:#1A2944; --ink:#E6ECF5; --heading:#F1F4F9; --sub:#9AA9BF; --line:#263552;
+  --hero-bg:#13213C; --hero-ink:#F1F4F9; --hero-sub:#9FB0CA; --coral:#FF7A50; --coral-ink:#FF9A78;
+  --good:#45CE96; --good-bg:#11372A; --bad:#FF8270; --bad-bg:#3A1B17; --warn:#F2AA5E; --warn-bg:#382813; --info:#8DB4F2; --info-bg:#172C4D;
+  color-scheme:dark; }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.hero{background:var(--hero-bg);color:var(--hero-ink)}
+.hero .wrap{padding-block:28px 26px;display:grid;gap:8px}
+.eyebrow{font-size:13px;letter-spacing:.04em;color:var(--coral);font-weight:700}
+h1{margin:0;font-size:28px;line-height:1.25;font-weight:900;text-wrap:balance}
+.hero p{margin:0;color:var(--hero-sub);font-size:15px;max-width:34em}
+main.wrap{padding-block:20px 40px;display:grid;gap:18px}
+section{display:grid;gap:12px}
+h2{margin:0;font-size:17px;font-weight:700;color:var(--heading)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:14px}
+.sample{font-size:13px;color:var(--sub)}
+.sample b{color:var(--coral-ink);font-weight:700}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.field{display:grid;gap:6px;min-width:0}
+.field label,.lbl{font-size:14px;font-weight:700;color:var(--heading)}
+.hint{font-size:12.5px;color:var(--sub);line-height:1.45}
+input[type=date],input[type=text],input[type=number],select{width:100%;min-width:0;font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-variant-numeric:tabular-nums}
+input:focus-visible,select:focus-visible,button:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+.seg{display:flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px;gap:3px}
+.seg label{flex:1;text-align:center;font-size:14px;font-weight:500;padding:7px 8px;border-radius:8px;cursor:pointer;color:var(--sub)}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg input:checked+span{color:var(--hero-ink)}
+.seg label:has(input:checked){background:var(--navy);color:#fff}
+:root[data-theme="dark"] .seg label:has(input:checked){background:#2D4A80}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) .seg label:has(input:checked){background:#2D4A80} }
+.checks{display:grid;gap:10px}
+.checkrow{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center}
+.checkrow select{width:auto;min-width:9.5em;padding:8px 10px;font-size:15px}
+.checkrow .q{font-size:14.5px}
+.money{display:none;gap:12px}
+.money.on{display:grid}
+.verdict{border-radius:var(--r);padding:16px;display:grid;gap:6px;background:var(--tint)}
+.verdict .chip{justify-self:start;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:99px;background:var(--surface)}
+.verdict .big{font-size:20px;line-height:1.4;font-weight:900;color:var(--heading);text-wrap:balance}
+.verdict .small{font-size:14.5px;color:var(--ink)}
+.t-bad{background:var(--bad-bg)} .t-bad .chip{color:var(--bad)}
+.t-good{background:var(--good-bg)} .t-good .chip{color:var(--good)}
+.t-warn{background:var(--warn-bg)} .t-warn .chip{color:var(--warn)}
+.t-info{background:var(--info-bg)} .t-info .chip{color:var(--info)}
+.dates{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:stretch}
+.tile{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;gap:2px;min-width:0;text-align:center}
+.tile .k{font-size:12.5px;color:var(--sub)}
+.tile .d{font-size:18px;font-weight:900;color:var(--heading);font-variant-numeric:tabular-nums}
+.tile .s{font-size:13px;font-weight:700}
+.tile.mark{border:2px solid var(--coral)}
+.arrow{align-self:center;font-size:13px;color:var(--sub);text-align:center;line-height:1.3}
+.arrow b{display:block;color:var(--coral-ink);font-size:15px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px;display:grid;gap:4px;min-width:0}
+.stat .k{font-size:12.5px;color:var(--sub);line-height:1.35}
+.stat .v{font-size:20px;font-weight:900;color:var(--heading);font-variant-numeric:tabular-nums;line-height:1.2;overflow-wrap:anywhere}
+.stat .s{font-size:12px;color:var(--sub)}
+.copyline{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px dashed var(--coral);border-radius:var(--r);padding:12px 14px}
+.copyline .txt{flex:1;min-width:0;font-size:17px;font-weight:700;color:var(--heading);font-variant-numeric:tabular-nums;user-select:all}
+button{font:inherit;font-size:14px;font-weight:700;border:0;border-radius:9px;padding:9px 14px;background:var(--navy);color:#fff;cursor:pointer;white-space:nowrap}
+:root[data-theme="dark"] button{background:#2D4A80}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]) button{background:#2D4A80} }
+.tl{width:100%;border-collapse:collapse;font-size:14.5px;font-variant-numeric:tabular-nums}
+.tl th{font-size:12.5px;color:var(--sub);font-weight:500;text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+.tl td{padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.tl td.n{text-align:right;font-weight:700;white-space:nowrap}
+.tl tr.next td{color:var(--sub)}
+.tl .st{font-size:12.5px;font-weight:700;white-space:nowrap}
+.st.ok{color:var(--good)} .st.no{color:var(--bad)} .st.wait{color:var(--warn)}
+.scroll{overflow-x:auto}
+details{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:12px 14px}
+details summary{cursor:pointer;font-weight:700;color:var(--heading);font-size:15px}
+details[open] summary{margin-bottom:8px}
+.notes{display:grid;gap:10px}
+.note{border-radius:var(--r);padding:12px 14px;font-size:14.5px;background:var(--surface);border:1px solid var(--line)}
+.note b{color:var(--heading)}
+.note.warn{background:var(--warn-bg);border-color:transparent}
+.note.info{background:var(--info-bg);border-color:transparent}
+.cta{background:var(--hero-bg);color:var(--hero-ink);border-radius:var(--r);padding:18px;display:grid;gap:10px}
+.cta h2{color:var(--hero-ink)}
+.cta ul{margin:0;padding-left:1.2em;color:var(--hero-sub);font-size:14.5px}
+.cta .phone{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.cta .num{font-size:22px;font-weight:900;letter-spacing:.02em;user-select:all;font-variant-numeric:tabular-nums}
+.cta .num a{color:inherit;text-decoration:none}
+.cta button{background:var(--coral);color:#1A1208}
+.cta .who{font-size:13px;color:var(--hero-sub)}
+.basis{font-size:13.5px;color:var(--sub);display:grid;gap:6px}
+.basis p{margin:0}
+.foot{font-size:12.5px;color:var(--sub);text-align:center}
+.err{color:var(--bad);font-weight:700;font-size:14.5px}
+.ask-link{justify-self:start;margin-top:4px;font-size:14px;font-weight:700;color:var(--heading);text-decoration:underline;text-decoration-color:var(--coral);text-underline-offset:3px}
+.ask{background:var(--surface);border:2px solid var(--coral);border-radius:var(--r);padding:16px;display:grid;gap:12px;scroll-margin-top:16px}
+.ask p{margin:0;font-size:15px}
+.msg{margin:0;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--font);font-size:14px;line-height:1.55;white-space:pre-wrap;overflow-wrap:anywhere;user-select:all;color:var(--ink)}
+.askrow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn-line{font-size:14px;font-weight:700;color:var(--heading);border:1px solid var(--line);border-radius:9px;padding:8px 14px;text-decoration:none;background:var(--bg)}
+main.wrap{padding-bottom:96px}
+.dock{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--hero-bg);color:var(--hero-ink);display:flex;align-items:center;justify-content:space-between;gap:10px;padding-top:10px;padding-bottom:calc(10px + env(safe-area-inset-bottom,0px));padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));box-shadow:0 -4px 16px rgba(10,20,40,.18)}
+.dock-t{font-size:14px;min-width:0}
+.dock-t b{font-size:16px;letter-spacing:.02em;user-select:all;white-space:nowrap}
+.dock-b{flex:none;font-size:14px;font-weight:700;background:var(--coral);color:#1A1208;border-radius:9px;padding:9px 14px;text-decoration:none}
+@media (max-width:520px){
+  h1{font-size:24px}
+  .grid2{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+  .stats .stat:last-child{grid-column:1/-1}
+  .checkrow{grid-template-columns:1fr}
+  .checkrow select{width:100%}
+}
+@media (prefers-reduced-motion:no-preference){ .verdict{transition:background-color .25s ease} }
+</style>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex">
+
+
+
+
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">이인재 노무사 · 퇴사 전에 꼭 확인</div>
+    <h1>연차·퇴사일 계산기</h1>
+    <p>입사일과 마지막으로 회사 직원인 날을 넣으면, 연차가 몇 개 생기는지와 하루 차이로 달라지는 개수·금액을 바로 보여 드려요.</p>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <section aria-labelledby="h-in">
+    <h2 id="h-in">내 날짜 넣기</h2>
+    <div class="panel">
+      <div class="sample" id="sample"><b>예시로 채워 두었어요.</b> 내 날짜로 바꾸면 아래 결과가 바로 바뀌어요.</div>
+      <div class="grid2">
+        <div class="field">
+          <label for="start">입사일</label>
+          <input type="date" id="start" value="2026-03-02">
+          <div class="hint">계약을 여러 번 다시 쓰며 이어서 다녔다면 처음 들어온 날</div>
+        </div>
+        <div class="field">
+          <label for="last">마지막 재직일</label>
+          <input type="date" id="last" value="2027-03-01">
+          <div class="hint">마지막 출근일이 아니라 사직서에 「○월 ○일까지 재직」으로 적을 날</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-out" aria-live="polite">
+    <h2 id="h-out">결과</h2>
+    <div class="verdict" id="verdict">
+      <span class="chip" id="v-chip">확인 중</span>
+      <div class="big" id="v-big">날짜를 넣어 주세요</div>
+      <div class="small" id="v-small"></div>
+      <a class="ask-link" id="v-ask" href="#ask" hidden>회사가 이 날짜를 당기려 하면? 결과 그대로 보내고 물어보기 ↓</a>
+    </div>
+
+    <div class="dates" id="dates">
+      <div class="tile" id="tile-last"><span class="k">마지막 재직일</span><span class="d" id="d-last">-</span><span class="s" id="s-last"></span></div>
+      <div class="arrow" id="arrow"></div>
+      <div class="tile mark" id="tile-next"><span class="k" id="k-next">다음 문턱</span><span class="d" id="d-next">-</span><span class="s" id="s-next"></span></div>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><span class="k">퇴사 때 남아 있을 수 있는 연차</span><span class="v" id="st-remain">-</span><span class="s" id="st-remain-s"></span></div>
+      <div class="stat"><span class="k">남은 연차로 받을 돈</span><span class="v" id="st-money">-</span><span class="s" id="st-money-s"></span></div>
+      <div class="stat"><span class="k">퇴직금</span><span class="v" id="st-sev">-</span><span class="s" id="st-sev-s"></span></div>
+    </div>
+
+    <div class="field">
+      <span class="lbl">사직서에는 이렇게 적어 두세요</span>
+      <div class="copyline"><span class="txt" id="resign">-</span><button type="button" id="copy-resign">복사</button></div>
+      <div class="hint" id="resign-hint">퇴사일 칸 하나만 믿지 말고 「까지 재직」을 붙여요. 회사마다 퇴사일을 마지막 날로도, 그다음 날로도 읽어서예요.</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-money">
+    <h2 id="h-money">금액까지 보려면</h2>
+    <div class="panel">
+      <div class="field">
+        <span class="lbl" id="pay-lbl">급여 방식</span>
+        <div class="seg" role="radiogroup" aria-labelledby="pay-lbl">
+          <label><input type="radio" name="pay" id="pay-month" value="month" checked><span>월급</span></label>
+          <label><input type="radio" name="pay" id="pay-hour" value="hour"><span>시급</span></label>
+          <label><input type="radio" name="pay" id="pay-none" value="none"><span>건너뛰기</span></label>
+        </div>
+      </div>
+      <div class="money on" id="money-month">
+        <div class="field">
+          <label for="wage">한 달 고정으로 받는 돈(세전, 원)</label>
+          <input type="text" id="wage" inputmode="numeric" value="3,000,000">
+          <div class="hint">기본급에 매달 고정으로 나오는 수당까지 넣고, 연장·야근 수당은 빼요. 주 40시간 기준으로 계산해요.</div>
+        </div>
+      </div>
+      <div class="money" id="money-hour">
+        <div class="grid2">
+          <div class="field">
+            <label for="rate">시급(원)</label>
+            <input type="text" id="rate" inputmode="numeric" value="10,320">
+          </div>
+          <div class="field">
+            <label for="dh">하루 근로시간</label>
+            <input type="number" id="dh" min="1" max="8" step="0.5" value="8">
+          </div>
+        </div>
+      </div>
+      <div class="field">
+        <label for="used">이미 쓴 연차(개, 모르면 0)</label>
+        <input type="number" id="used" min="0" max="60" step="0.5" value="0">
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-co">
+    <h2 id="h-co">우리 회사도 해당되나</h2>
+    <div class="panel checks">
+      <div class="hint">바꾸면 위 결과가 바로 바뀌어요.</div>
+      <div class="checkrow">
+        <label class="q" for="size">사장님 빼고 일하는 사람(알바·계약직 포함)이 평소</label>
+        <select id="size"><option value="5up" selected>5명 이상</option><option value="4down">4명 이하</option><option value="unknown">잘 모르겠음</option></select>
+      </div>
+      <div class="checkrow">
+        <label class="q" for="hours">일주일에 일하기로 한 시간이</label>
+        <select id="hours"><option value="15up" selected>15시간 이상</option><option value="15down">15시간 미만</option></select>
+      </div>
+      <div class="checkrow">
+        <label class="q" for="kind">근로계약서에 끝나는 날이</label>
+        <select id="kind"><option value="regular" selected>없어요(정규직)</option><option value="contract">있어요(계약직)</option></select>
+      </div>
+      <div class="checkrow">
+        <label class="q" for="att">지난 1년 동안 나와야 하는 날 중</label>
+        <select id="att"><option value="80up" selected>80% 이상 나왔어요</option><option value="80down">80%가 안 돼요</option></select>
+      </div>
+      <div class="checkrow">
+        <label class="q" for="basis">회사가 연차를 주는 방식이</label>
+        <select id="basis"><option value="hire" selected>입사일마다</option><option value="fiscal">1월 1일에 한꺼번에</option><option value="unknown">잘 모르겠음</option></select>
+      </div>
+      <div class="hint">3.3% 떼고 받았어도, 출퇴근 시간이 정해져 있고 회사가 시키는 대로 일했다면 근로자로 볼 가능성이 높아요.</div>
+    </div>
+  </section>
+
+  <section id="ask" class="ask" aria-labelledby="h-ask">
+    <h2 id="h-ask">이 결과로 노무사에게 물어보기</h2>
+    <p>아래 내용을 복사해서 <b>010-2969-3740</b>로 문자 보내 주세요. 회사가 날짜를 당기려 하거나 연차수당을 안 줄 때 어떻게 할지 같이 봐 드릴게요. 급여명세서 사진을 같이 보내 주시면 금액까지 봐 드려요.</p>
+    <pre class="msg" id="msg">-</pre>
+    <div class="askrow">
+      <button type="button" id="copy-msg">결과 복사</button>
+      <a class="btn-line" id="sms-link" href="sms:01029693740">문자 앱 열기</a>
+    </div>
+    <div class="hint">「문자 앱 열기」가 안 되면 복사한 뒤 문자 앱에 붙여 넣어 주세요. 메일은 hrmastery@naver.com 으로 보내셔도 돼요.</div>
+  </section>
+
+  <section aria-labelledby="h-tl">
+    <h2 id="h-tl">연차가 생기는 날</h2>
+    <div class="panel scroll">
+      <table class="tl">
+        <thead><tr><th>생기는 날</th><th>무엇</th><th style="text-align:right">개수</th><th>그날 직원?</th></tr></thead>
+        <tbody id="tl-body"></tbody>
+      </table>
+      <div class="hint">연차는 채운 그날이 아니라 그다음 날 생겨요. 그날 회사 직원이어야 받아요. 개근했다고 보고 센 최대치예요.</div>
+    </div>
+  </section>
+
+  <section aria-labelledby="h-nt" id="notes-sec">
+    <h2 id="h-nt">내 경우에 더 볼 것</h2>
+    <div class="notes" id="notes"></div>
+  </section>
+
+  <section aria-labelledby="h-pay">
+    <h2 id="h-pay">언제까지 받나</h2>
+    <div class="panel">
+      <div><b>퇴사하고 14일 안</b>에 마지막 월급이랑 같이 들어와야 해요. 이 날짜면 <b id="due14">-</b> 무렵까지예요. 따로 늦추자고 합의했다면 달라질 수 있어요.</div>
+      <div>안 들어오면 노동청에 진정을 넣을 수 있어요. <b>3년이 지나면</b> 못 받으니 미루지 마세요.</div>
+      <div class="hint">회사 규정에 「퇴사하면 연차수당은 정산하지 않는다」고 적혀 있어도 법보다 못한 그 부분은 효력이 없어요. 회사가 연차를 쓰라고 정식으로 서면 재촉을 했다면 결과가 달라질 수 있어요.</div>
+    </div>
+  </section>
+
+  <section class="cta" aria-labelledby="h-cta">
+    <h2 id="h-cta">이럴 땐 같이 봐 드릴게요</h2>
+    <ul>
+      <li>퇴사 날짜를 정해 뒀는데 회사가 날짜를 당기려고 할 때</li>
+      <li>퇴사하고 2주가 지났는데 연차수당이 안 들어왔을 때</li>
+    </ul>
+    <div>입사일, 마지막 날, 회사랑 주고받은 문자, 급여명세서 한 장을 문자로 보내 주시면 날짜를 어떻게 지킬지와 얼마를 받아야 하는지 같이 봐 드릴게요.</div>
+    <div class="phone"><span class="num"><a href="sms:01029693740">010-2969-3740</a></span><button type="button" id="copy-phone">번호 복사</button></div>
+    <div class="who">이인재 노무사 · 노무법인 시너지 · 문자 먼저 주셔도 돼요</div>
+  </section>
+
+  <details>
+    <summary>이렇게 계산했어요</summary>
+    <div class="basis">
+      <p>처음 1년은 한 달을 개근하면 그다음 날 1개가 생겨요(최대 11개). 1년을 채우면 그다음 날, 즉 내년 입사일 날짜에 15개가 생기고, 3년째부터 2년마다 1개씩 늘어 최대 25개예요. 첫해 몫 11개와 둘째 해 몫 15개가 같이 남아 있으면 26개가 돼요.</p>
+      <p>연차가 생기는 그날 회사 직원이 아니면 그 몫은 받지 못해요. 그래서 마지막 재직일이 입사일 하루 전날이면 15개가 빠져요. 퇴직금은 1년만 채우면 대상이라 문턱이 하루 달라요.</p>
+      <p>금액은 하루치 통상임금 × 남은 개수예요. 월급은 한 달 고정 급여 ÷ 209시간 × 8시간으로 하루치를 잡았어요. 회사 규정이 평균임금으로 주게 돼 있으면 달라질 수 있어요.</p>
+      <p>근거: 근로기준법 제60조·제36조·제49조, 근로자퇴직급여 보장법 제4조, 대법원 2021. 10. 14. 선고 2021다227100 판결, 대법원 2022. 9. 7. 선고 2022다245419 판결, 고용노동부 행정해석 임금근로시간과-2885(2021. 12. 20.)·임금근로시간과-1736(2021. 8. 4.)</p>
+    </div>
+  </details>
+
+  <p class="foot">넣은 날짜와 금액은 이 화면 안에서만 계산되고 어디에도 저장되거나 전송되지 않아요. 결과는 참고용 예상치예요.</p>
+</main>
+
+<div class="dock" role="complementary" aria-label="상담 연락처">
+  <span class="dock-t">막히면 문자 주세요 <b>010-2969-3740</b></span>
+  <a class="dock-b" href="#ask">결과 보내기</a>
+</div>
+
+<script>
+// ==CALC START==
+const DOW = ['일','월','화','수','목','금','토'];
+const DAY = 864e5;
+function toDate(v){ if(!v) return null; const p = String(v).split('-').map(Number); if(p.length!==3 || p.some(isNaN)) return null; return new Date(Date.UTC(p[0], p[1]-1, p[2])); }
+function dim(y, m){ return new Date(Date.UTC(y, m+1, 0)).getUTCDate(); }
+// 입사일부터 k개월을 채운 「다음 날」. 그 달에 같은 날짜가 없으면(1/31 → 2월) 그 달 말일까지가 기간이고 다음 날은 다음 달 1일.
+function addMonths(s, k){ const y=s.getUTCFullYear(), m=s.getUTCMonth()+k, d=s.getUTCDate(); const ty=y+Math.floor(m/12), tm=((m%12)+12)%12; return d<=dim(ty,tm) ? new Date(Date.UTC(ty,tm,d)) : new Date(Date.UTC(ty,tm+1,1)); }
+function addDays(d, n){ return new Date(d.getTime() + n*DAY); }
+function daysBetween(a, b){ return Math.round((b - a)/DAY); }
+function calc(S, L){
+  let gotMonthly = 0, nextMonthly = null; const monthly = [];
+  for(let m=1; m<=11; m++){ const a = addMonths(S, m); const got = a <= L; monthly.push({date:a, m, got}); if(got) gotMonthly++; else if(!nextMonthly) nextMonthly = {date:a, count:1, kind:'month', n:m}; }
+  const annual = []; let nextAnnual = null;
+  for(let n=1; n<=60; n++){ const a = addMonths(S, 12*n); const c = Math.min(25, 15 + Math.floor((n-1)/2)); if(a <= L) annual.push({date:a, n, count:c}); else { nextAnnual = {date:a, n, count:c, kind:'year'}; break; } }
+  let next = null; [nextMonthly, nextAnnual].forEach(e => { if(e && (!next || e.date < next.date)) next = e; });
+  const lastAnnual = annual.length ? annual[annual.length-1] : null;
+  const twoYear = addMonths(S, 24);
+  const keepMonthly = !lastAnnual || L < twoYear;
+  const maxRemain = (lastAnnual ? lastAnnual.count : 0) + (keepMonthly ? gotMonthly : 0);
+  const oneYear = addMonths(S, 12);
+  const sevDay = addDays(oneYear, -1);
+  return {monthly, gotMonthly, annual, lastAnnual, next, maxRemain, keepMonthly, oneYear, sevDay, severance: L >= sevDay, gap: next ? daysBetween(L, next.date) : null};
+}
+// ==CALC END==
+
+const $ = id => document.getElementById(id);
+function fmt(d){ return d.getUTCFullYear()+'. '+(d.getUTCMonth()+1)+'. '+d.getUTCDate()+'.('+DOW[d.getUTCDay()]+')'; }
+function fmtK(d){ return d.getUTCFullYear()+'년 '+(d.getUTCMonth()+1)+'월 '+d.getUTCDate()+'일'; }
+function num(v){ const n = Number(String(v||'').replace(/[^0-9.]/g,'')); return isFinite(n) ? n : 0; }
+function won(x){ return '약 ' + (Math.round(x/10)*10).toLocaleString('ko-KR') + '원'; }
+function esc(s){ return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+function payMode(){ return document.querySelector('input[name=pay]:checked').value; }
+function dayPay(){
+  const mode = payMode();
+  if(mode === 'month'){ const w = num($('wage').value); return w > 0 ? w/209*8 : 0; }
+  if(mode === 'hour'){ const r = num($('rate').value), h = Math.min(8, num($('dh').value) || 8); return r > 0 ? r*h : 0; }
+  return 0;
+}
+
+function setVerdict(tone, chip, big, small){
+  const v = $('verdict'); v.className = 'verdict t-' + tone;
+  $('v-chip').textContent = chip; $('v-big').textContent = big; $('v-small').textContent = small || '';
+}
+
+function render(){
+  const S = toDate($('start').value), L = toDate($('last').value);
+  ['money-month','money-hour'].forEach(id => $(id).classList.remove('on'));
+  if(payMode() === 'month') $('money-month').classList.add('on');
+  if(payMode() === 'hour') $('money-hour').classList.add('on');
+  if(!S || !L){ setVerdict('info','날짜 필요','입사일과 마지막 재직일을 넣어 주세요',''); return; }
+  if(L < S){ setVerdict('bad','날짜 확인','마지막 재직일이 입사일보다 빨라요','두 날짜를 바꿔 넣은 건 아닌지 봐 주세요.'); return; }
+
+  const r = calc(S, L);
+  const size = $('size').value, hours = $('hours').value, kind = $('kind').value, att = $('att').value, basis = $('basis').value;
+  const dp = dayPay();
+  const used = Math.max(0, num($('used').value));
+  const remain = Math.max(0, r.maxRemain - used);
+  const noLeave = hours === '15down' || size === '4down';
+
+  // 판정 한 줄
+  if(hours === '15down'){
+    setVerdict('info','해당 없음','일주일에 15시간 미만이면 연차가 생기지 않아요','퇴직금도 같은 기준이라 대상이 아니에요. 실제로 일한 시간이 15시간을 넘었다면 따로 물어보세요.');
+  } else if(size === '4down'){
+    setVerdict('info','해당 없음','4명 이하 회사는 연차 규정이 적용되지 않아요','사장님은 빼고 알바·계약직은 넣어서 세요. 퇴직금은 회사 크기와 상관없이 1년이면 대상이에요.');
+  } else if(r.next && r.gap === 1){
+    const add = dp ? ' 금액으로 ' + won(r.next.count*dp) + '이에요.' : '';
+    setVerdict('bad','딱 하루 차이', fmt(r.next.date) + '까지 재직하면 ' + r.next.count + '개가 더 생겨요', '지금 날짜는 ' + (r.next.kind==='year' ? '입사일 하루 전날' : '한 달을 채운 날') + '이라 그 몫이 빠져요.' + add);
+  } else if(r.lastAnnual && r.lastAnnual.date.getTime() === L.getTime()){
+    setVerdict('good','문턱 통과','입사일 날짜까지 재직이라 ' + r.lastAnnual.count + '개가 생겨요', '그날이 쉬는 날이어도 그날까지 직원이면 돼요. 사직서 날짜를 꼭 이대로 적어 두세요.');
+  } else if(r.next && r.gap <= 31){
+    const add = dp ? ' (' + won(r.next.count*dp) + ')' : '';
+    setVerdict('warn', r.gap + '일 차이', r.gap + '일 더 다니면 ' + r.next.count + '개가 더 생겨요' + add, fmt(r.next.date) + '까지 재직하면 그 몫까지 받아요. 인수인계를 며칠 더 하겠다고 먼저 말해 보세요.');
+  } else {
+    setVerdict('good','확인','이 날짜면 퇴사 때 최대 ' + r.maxRemain + '개가 남아 있을 수 있어요', r.next ? '다음 연차는 ' + fmt(r.next.date) + '에 ' + r.next.count + '개가 생겨요.' : '');
+  }
+
+  // 날짜 두 칸
+  $('d-last').textContent = fmt(L);
+  $('s-last').textContent = '이날까지 회사 직원';
+  if(r.next){
+    $('k-next').textContent = r.next.kind === 'year' ? '다음 입사일 날짜(문턱)' : '다음 한 달 채우는 날';
+    $('d-next').textContent = fmt(r.next.date);
+    $('s-next').textContent = '+' + r.next.count + '개';
+    $('s-next').style.color = 'var(--coral-ink)';
+    $('arrow').innerHTML = '<b>+' + r.gap + '일</b>더 다니면';
+  }
+  // 숫자 세 칸
+  if(noLeave){
+    $('st-remain').textContent = '0개'; $('st-remain-s').textContent = '연차 규정 밖';
+    $('st-money').textContent = '-'; $('st-money-s').textContent = '';
+  } else {
+    $('st-remain').textContent = remain + '개';
+    let parts = [];
+    if(r.keepMonthly && r.gotMonthly) parts.push('첫해 ' + r.gotMonthly);
+    if(r.lastAnnual) parts.push(r.lastAnnual.n + '년 근속 몫 ' + r.lastAnnual.count);
+    $('st-remain-s').textContent = (parts.join(' + ') || '아직 없음') + (used ? ' − 쓴 ' + used : '') + (att==='80down' && r.lastAnnual ? ' · 출근율 확인 필요' : '');
+    $('st-money').textContent = dp ? won(remain*dp) : '급여 입력';
+    $('st-money-s').textContent = dp ? '하루치 ' + won(dp).replace('약 ','') : '';
+  }
+  if(hours === '15down'){ $('st-sev').textContent = '해당 없음'; $('st-sev-s').textContent = '주 15시간 미만'; }
+  else if(r.severance){ $('st-sev').textContent = '대상'; $('st-sev-s').textContent = '1년 이상 재직'; }
+  else { $('st-sev').textContent = daysBetween(L, r.sevDay) + '일 부족'; $('st-sev-s').textContent = fmt(r.sevDay) + '까지 재직하면 대상'; }
+
+  // 사직서 한 줄
+  $('resign').textContent = fmtK(L) + '까지 재직';
+
+  // 생기는 날 표
+  const rows = [];
+  if(r.gotMonthly || r.monthly.length){
+    const firstM = r.monthly[0].date, lastGot = r.monthly.filter(x => x.got).pop();
+    rows.push('<tr><td>' + fmt(firstM) + ' ~</td><td>첫해 · 한 달 개근할 때마다 1개</td><td class="n">' + r.gotMonthly + ' / 11개</td><td>' + (r.gotMonthly === 11 ? '<span class="st ok">모두 생김</span>' : (lastGot ? '<span class="st wait">' + r.gotMonthly + '개까지</span>' : '<span class="st no">아직</span>')) + '</td></tr>');
+  }
+  r.annual.forEach(a => rows.push('<tr><td>' + fmt(a.date) + '</td><td>' + a.n + '년 근속 다음 날</td><td class="n">' + a.count + '개</td><td><span class="st ok">생김</span></td></tr>'));
+  if(r.next && r.next.kind === 'year') rows.push('<tr class="next"><td>' + fmt(r.next.date) + '</td><td>' + r.next.n + '년 근속 다음 날</td><td class="n">' + r.next.count + '개</td><td><span class="st ' + (r.gap === 1 ? 'no' : 'wait') + '">' + (r.gap === 1 ? '하루 모자람' : r.gap + '일 남음') + '</span></td></tr>');
+  if(r.next && r.next.kind === 'month'){
+    const ny = r.oneYear; rows.push('<tr class="next"><td>' + fmt(ny) + '</td><td>1년 근속 다음 날</td><td class="n">15개</td><td><span class="st wait">' + daysBetween(L, ny) + '일 남음</span></td></tr>');
+  }
+  $('tl-body').innerHTML = rows.join('');
+
+  // 내 경우에 더 볼 것
+  const notes = [];
+  const dow = L.getUTCDay();
+  if(dow === 5 || dow === 6){
+    const sun = addDays(L, 7 - dow);
+    notes.push('<div class="note warn"><b>시급으로 받는 분은 일요일까지 재직으로.</b> 마지막 주를 빠짐없이 나왔다면 ' + esc(fmt(sun)) + '까지 재직으로 적어야 그 주 주휴수당이 나와요(일주일에 15시간 이상 일하는 분).</div>');
+  }
+  if(kind === 'contract'){
+    notes.push('<div class="note"><b>계약직이면</b> 끝나는 날을 혼자 늘릴 수 없어요. 회사가 인수인계로 며칠 더 해 달라고 하면 받으세요. 그 며칠이 입사일 날짜까지 이어지면 15개가 생길 수 있어요. 며칠까지 연장했는지는 문자로 남겨 두세요.</div>');
+    notes.push('<div class="note"><b>실업급여도 같이 지키세요.</b> 사직서를 쓰라고 하면 사유는 「계약기간 만료」로. 「개인 사정」으로 쓰면 막힐 수 있어요. 회사가 재계약하자는데 내가 거절하고 나오면 더 다닐 수 있었던 셈이라 실업급여가 막힐 수 있어요.</div>');
+  }
+  if(att === '80down'){
+    notes.push('<div class="note warn"><b>출근율이 80%가 안 되면</b> 그해 15개 대신 개근한 달마다 1개씩만 생겨요. 일하다 다쳐서 쉰 기간, 출산휴가, 육아휴직은 나온 걸로 쳐요.</div>');
+  }
+  if(basis === 'fiscal'){
+    notes.push('<div class="note info"><b>1월 1일에 한꺼번에 주는 회사라면</b> 계산이 조금 달라져요. 그만둘 때 입사일 기준으로 다시 따져서 모자라면 더 받을 수 있어요. 이 계산기는 입사일 기준이라 따로 물어보세요.</div>');
+  }
+  if(size === 'unknown'){
+    notes.push('<div class="note info"><b>인원은 이렇게 세요.</b> 사장님은 빼고 정직원·알바·계약직을 다 넣어요. 15개는 지난 1년 동안 계속 5명 이상이었는지를 봐요.</div>');
+  }
+  if(!noLeave && r.lastAnnual && r.lastAnnual.n >= 2){
+    notes.push('<div class="note"><b>오래 다녔어도 같아요.</b> 매년 입사일 날짜가 문턱이에요. 이 날짜 전에 나가면 그해 몫이 빠지고, 하루만 넘기면 받아요. 지난해 이전에 못 쓴 연차를 수당으로 못 받았다면 3년 안에 따로 청구할 수 있어요.</div>');
+  }
+  $('notes').innerHTML = notes.join('');
+  $('notes-sec').hidden = notes.length === 0;
+
+  // 14일
+  $('due14').textContent = fmt(addDays(L, 14));
+
+  // 상담 문자
+  const tone = $('verdict').className;
+  $('v-ask').hidden = !(/t-bad|t-warn/.test(tone));
+  const opt = id => $(id).selectedOptions[0].textContent;
+  const lines = [
+    '[연차·퇴사일 계산기 결과]',
+    '입사일: ' + fmt(S),
+    '마지막 재직일: ' + fmt(L),
+    '결과: ' + $('v-big').textContent,
+    '회사: 인원 ' + opt('size') + ' · 주 ' + opt('hours') + ' · 계약 끝나는 날 ' + opt('kind'),
+  ];
+  if(!noLeave) lines.push('남은 연차(최대): ' + remain + '개' + (dp ? ' · ' + won(remain*dp) : ''));
+  lines.push('궁금한 점: (여기에 적어 주세요)');
+  const msg = lines.join('\n');
+  $('msg').textContent = msg;
+  $('sms-link').href = 'sms:01029693740?&body=' + encodeURIComponent(msg);
+}
+
+function copyText(text, btn){
+  const done = () => { const t = btn.textContent; btn.textContent = '복사됨'; setTimeout(() => { btn.textContent = t; }, 1500); };
+  try {
+    navigator.clipboard.writeText(text).then(done).catch(() => selectFallback(btn));
+  } catch(e){ selectFallback(btn); }
+}
+function selectFallback(btn){
+  const el = btn.parentElement.querySelector('.txt, .num');
+  const range = document.createRange(); range.selectNodeContents(el);
+  const sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(range);
+  btn.textContent = '길게 눌러 복사';
+}
+$('copy-resign').addEventListener('click', e => copyText($('resign').textContent, e.currentTarget));
+$('copy-phone').addEventListener('click', e => copyText('010-2969-3740', e.currentTarget));
+$('copy-msg').addEventListener('click', e => copyText($('msg').textContent, e.currentTarget));
+
+function commaInput(el){ el.addEventListener('input', () => { const n = num(el.value); el.value = n ? Math.round(n).toLocaleString('ko-KR') : ''; }); }
+commaInput($('wage')); commaInput($('rate'));
+
+let touched = false;
+document.querySelectorAll('input, select').forEach(el => el.addEventListener('input', () => {
+  if(!touched && (el.id === 'start' || el.id === 'last')){ touched = true; $('sample').hidden = true; }
+  render();
+}));
+document.querySelectorAll('input[name=pay]').forEach(el => el.addEventListener('change', render));
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="선생님별 출근 요일만 고르면 법이 세는 방식(하루 평균 + 날짜별)으로 5인 여부를 계산해 드려요. 학원노무 1교시">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="노무법인 시너지">
+<meta property="og:title" content="우리 학원, 5인일까? 요일만 고르면 바로 셉니다">
+<meta property="og:description" content="선생님별 출근 요일만 고르면 법이 세는 방식(하루 평균 + 날짜별)으로 5인 여부를 계산해 드려요. 학원노무 1교시">
+<meta property="og:url" content="https://guide.snghr.com/5in">
+<meta property="og:image" content="https://guide.snghr.com/og.png">
+<style>[hidden]{display:none!important}</style>
+<title>우리 학원 5인 계산기</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;800&display=swap">
+<style>
+/* 칠판 판서 시리즈와 같은 결: 진녹 칠판 + 분필 노랑 강조, 계산 결과는 흰 카드 */
+:root{
+  --bg:#F4F6F2; --card:#FFFFFF; --fg:#1E2B25; --muted:#5E6E66; --line:#D9E1DB;
+  --board:#24453A; --chalk:#F2F5EE; --accent:#F2C94C; --accent-ink:#24453A;
+  --good:#1C7A43; --good-bg:#E5F4EA; --warn:#B4232A; --warn-bg:#FCE8E8; --cell:#EEF2EF;
+  --f-body:'Noto Sans KR','Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121815; --card:#1B2420; --fg:#E7EDE9; --muted:#9DB0A6; --line:#2E3B35;
+  --board:#1A3329; --chalk:#E9EFEA; --accent:#F2C94C; --accent-ink:#1A3329;
+  --good:#6FD39A; --good-bg:#183326; --warn:#FF8C8C; --warn-bg:#3A1C1C; --cell:#232E29; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121815; --card:#1B2420; --fg:#E7EDE9; --muted:#9DB0A6; --line:#2E3B35;
+  --board:#1A3329; --chalk:#E9EFEA; --accent:#F2C94C; --accent-ink:#1A3329;
+  --good:#6FD39A; --good-bg:#183326; --warn:#FF8C8C; --warn-bg:#3A1C1C; --cell:#232E29; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:16px;line-height:1.6;word-break:keep-all;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 48px}
+.wrap{max-width:720px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+.hero{background:var(--board);color:var(--chalk);border-radius:16px;padding:26px 24px;border:6px solid #5E3F24}
+.eye{font-size:13px;font-weight:700;letter-spacing:.04em;opacity:.8}
+h1{font-size:30px;font-weight:800;margin:8px 0 6px;line-height:1.25;text-wrap:balance}
+h1 u{text-decoration:none;border-bottom:5px solid var(--accent)}
+.hero p{margin:0;font-size:15px;opacity:.9}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.card h2{font-size:18px;font-weight:800;margin:0 0 10px;display:flex;align-items:center;gap:8px}
+.step{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--board);color:var(--accent);font-size:14px}
+.hint{font-size:13px;color:var(--muted);margin:8px 0 0}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+input,select,button{font:inherit}
+input[type=month],input[type=text],select{font-size:16px;padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card);color:var(--fg)}
+.days{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.days label{display:flex;align-items:center;justify-content:center;width:42px;height:38px;border:1px solid var(--line);border-radius:10px;cursor:pointer;font-weight:700;user-select:none}
+.days input{position:absolute;opacity:0;pointer-events:none}
+.days label:has(input:checked){background:var(--board);border-color:var(--board);color:var(--accent)}
+.days label:has(input:focus-visible){outline:2px solid var(--accent);outline-offset:2px}
+.p{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:10px}
+.p .top{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.p .top input[type=text]{flex:1;min-width:110px}
+.fam{display:flex;gap:4px;align-items:center;font-size:14px}
+.del{border:0;background:var(--cell);color:var(--muted);border-radius:10px;padding:8px 12px;cursor:pointer}
+.add{margin-top:12px;width:100%;border:2px dashed var(--line);background:transparent;color:var(--fg);font-weight:800;border-radius:14px;padding:12px;cursor:pointer}
+.res{text-align:center}
+.big{font-size:54px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.verdict{display:inline-block;margin-top:10px;font-size:18px;font-weight:800;padding:8px 18px;border-radius:999px}
+.yes{background:var(--warn-bg);color:var(--warn)}.no{background:var(--good-bg);color:var(--good)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.g3 div{background:var(--cell);border-radius:12px;padding:10px 4px}
+.g3 b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.g3 span{font-size:12px;color:var(--muted)}
+.why{margin-top:12px;font-size:14px;text-align:left;background:var(--cell);border-radius:12px;padding:12px 14px}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:4px;margin-top:12px;font-size:12px}
+.cal div{border-radius:8px;padding:5px 0;text-align:center;font-variant-numeric:tabular-nums}
+.cal .h{color:var(--muted);font-weight:700}
+.cal .off{background:var(--cell);color:var(--muted);opacity:.6;cursor:pointer}
+.cal .ok{background:var(--good-bg);color:var(--good);font-weight:700;cursor:pointer}
+.cal .low{background:var(--warn-bg);color:var(--warn);font-weight:700;cursor:pointer}
+.cta{background:var(--board);color:var(--chalk);border-radius:16px;padding:20px}
+.cta b{font-size:18px}
+.cta p{margin:6px 0 0;font-size:15px;opacity:.9}
+.cta .btns{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px;align-items:center}
+.cta a,.cta button{background:var(--accent);color:var(--accent-ink);font-weight:800;padding:10px 16px;border-radius:12px;text-decoration:none;border:0;cursor:pointer}
+.cta .num{font-weight:800;font-size:17px;user-select:all}
+.foot{font-size:12px;color:var(--muted);line-height:1.7}
+@media (prefers-reduced-motion:no-preference){.verdict{transition:background .2s}}
+</style>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+
+
+
+<div class="wrap">
+<header class="hero">
+<div class="eye">학원노무 1교시 · 5인 계산기 · 노무법인 시너지</div>
+<h1>우리 학원, <u>5인</u>일까?</h1>
+<p>선생님마다 출근하는 요일만 고르면, 법이 세는 방식(하루 평균 + 날짜별 확인)으로 바로 계산합니다. 입력한 내용은 이 화면 밖으로 나가지 않습니다.</p>
+</header>
+
+<section class="card">
+<h2><span class="step">1</span>어느 달을 셀까요?</h2>
+<div class="row"><label for="ym">달</label><input type="month" id="ym"></div>
+<p class="hint" style="margin-top:12px">학원 문 여는 요일</p>
+<div class="days" id="open"></div>
+<p class="hint">공휴일이나 방학 휴원은 아래 달력에서 날짜를 눌러 빼세요.</p>
+</section>
+
+<section class="card">
+<h2><span class="step">2</span>선생님을 넣어 주세요</h2>
+<p class="hint" style="margin-top:0">정규 강사, 파트 강사, 조교, 실장님까지 모두 넣으세요. 원장님 본인은 빼고 셉니다. 처음에는 예시 학원이 들어 있습니다.</p>
+<div id="people"></div>
+<button class="add" id="addBtn" type="button">+ 선생님 추가</button>
+</section>
+
+<section class="card res" id="result" aria-live="polite"></section>
+
+<section class="cta">
+<b>숫자가 5 근처에서 애매하다면</b>
+<p>지난 한 달 출근 기록만 가지고 오시면 함께 세어 드립니다. 5인이 넘었다면 연차와 수당에서 무엇이 달라지는지 같이 정리해 드려요.</p>
+<div class="btns"><a href="https://litt.ly/suncream">상담 신청</a><span class="num" id="tel">010-2969-3740</span><button type="button" id="copy">번호 복사</button></div>
+</section>
+
+<p class="foot">근거: 근로기준법 제11조, 같은 법 시행령 제7조의2. 지난 1개월(정확히는 판단할 일이 생긴 날 전 1개월) 동안 일한 사람을 날짜마다 더한 수를 문 연 날수로 나누고, 날짜별로 5명이 안 되는 날이 절반 이상이면 5인 사업장으로 보지 않고 절반 미만이면 5인 사업장으로 봅니다. 연차는 같은 조 제3항에 따라 1년 동안 계속 5명 이상이었는지로 따로 봅니다. 3.3% 강사도 학원이 출퇴근과 시간표를 정하면 근로자로 셀 수 있고, 함께 일하는 가족은 가족 아닌 직원이 1명이라도 있으면 셉니다. 이 계산은 참고용이며 실제 판단은 사실관계에 따라 달라질 수 있습니다.<br>노무법인 시너지 · 대표 공인노무사 이인재 · 서울 강남구 테헤란로 151 역삼하이츠빌딩 901호</p>
+</div>
+
+<script>
+const WD=['일','월','화','수','목','금','토'];
+const st={open:[1,2,3,4,5,6],closed:new Set(),people:[]};
+const $=id=>document.getElementById(id);
+const now=new Date();now.setMonth(now.getMonth()-1);
+$('ym').value=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');
+let uid=0;
+function dayBoxes(el,sel,cb,prefix){el.innerHTML='';WD.forEach((w,i)=>{const id=prefix+'-'+i;const l=document.createElement('label');l.setAttribute('for',id);
+l.innerHTML=`<input type="checkbox" id="${id}" ${sel.includes(i)?'checked':''}><span>${w}</span>`;l.querySelector('input').onchange=e=>cb(i,e.target.checked);el.appendChild(l)})}
+dayBoxes($('open'),st.open,(i,c)=>{st.open=c?[...st.open,i]:st.open.filter(x=>x!==i);calc()},'open');
+function esc(s){return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]))}
+function render(){const box=$('people');box.innerHTML='';st.people.forEach((p,idx)=>{const d=document.createElement('div');d.className='p';
+d.innerHTML=`<div class="top"><input type="text" id="nm-${p.id}" aria-label="이름" placeholder="이름(안 써도 됨)" value="${esc(p.name)}"><select id="kd-${p.id}" aria-label="구분"><option>정규</option><option>파트</option><option>조교</option><option>실장·직원</option><option>3.3% 강사</option></select><label class="fam" for="fm-${p.id}"><input type="checkbox" id="fm-${p.id}" ${p.family?'checked':''}>가족</label><button class="del" type="button">삭제</button></div><div class="days"></div>`;
+d.querySelector('input[type=text]').oninput=e=>{p.name=e.target.value};const sel=d.querySelector('select');sel.value=p.kind;sel.onchange=e=>{p.kind=e.target.value;calc()};
+d.querySelector('.fam input').onchange=e=>{p.family=e.target.checked;calc()};d.querySelector('.del').onclick=()=>{st.people.splice(idx,1);render()};
+dayBoxes(d.querySelector('.days'),p.days,(i,c)=>{p.days=c?[...p.days,i]:p.days.filter(x=>x!==i);calc()},'d'+p.id);box.appendChild(d)});calc()}
+function addPerson(p){st.people.push(Object.assign({id:++uid,name:'',kind:'정규',days:[1,2,3,4,5],family:false},p||{}));render()}
+$('addBtn').onclick=()=>addPerson();
+$('ym').onchange=()=>{st.closed.clear();calc()};
+$('copy').onclick=()=>{const t='010-2969-3740';(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>{$('copy').textContent='복사됨'}).catch(()=>{const r=document.createRange();r.selectNodeContents($('tel'));const s=getSelection();s.removeAllRanges();s.addRange(r)})};
+function calc(){const v=$('ym').value;if(!v)return;const [y,m]=v.split('-').map(Number);const n=new Date(y,m,0).getDate();
+const hasNonFamily=st.people.some(p=>!p.family);let openDays=0,total=0,low=0;const cells=[];
+for(let dd=1;dd<=n;dd++){const w=new Date(y,m-1,dd).getDay();const isOpen=st.open.includes(w)&&!st.closed.has(dd);let c=0;
+if(isOpen){st.people.forEach(p=>{if(p.days.includes(w)&&(!p.family||hasNonFamily))c++});openDays++;total+=c;if(c<5)low++}cells.push({dd,isOpen,c})}
+const avg=openDays?total/openDays:0;const applies=openDays>0&&low<openDays/2;
+let cal='';WD.forEach(w=>cal+=`<div class="h">${w}</div>`);for(let i=0;i<new Date(y,m-1,1).getDay();i++)cal+='<div></div>';
+cells.forEach(x=>{cal+=`<div class="${!x.isOpen?'off':(x.c<5?'low':'ok')}" data-d="${x.dd}" role="button" tabindex="0">${x.dd}<br>${x.isOpen?x.c+'명':'휴'}</div>`});
+$('result').innerHTML=`<h2 style="justify-content:center">${m}월 결과</h2><div class="big">${avg.toFixed(1)}명</div><div style="color:var(--muted)">하루 평균 출근 인원</div>
+<div class="verdict ${applies?'yes':'no'}">${openDays?(applies?'5인 이상 사업장으로 봅니다':'5인 미만 사업장으로 봅니다'):'문 여는 요일을 골라 주세요'}</div>
+<div class="g3"><div><b>${total}</b><span>한 달 연인원</span></div><div><b>${openDays}일</b><span>문 연 날</span></div><div><b>${low}일</b><span>5명 안 된 날</span></div></div>
+<div class="why">${openDays?`문 연 날 ${openDays}일 중 5명이 안 된 날이 ${low}일로, 절반(${(openDays/2).toFixed(1)}일)${applies?'보다 적어서 <b>5인 사업장</b>으로 봅니다.':' 이상이라 <b>5인 사업장으로 보지 않습니다</b>.'} 연차는 이렇게 달마다 세었을 때 1년 동안 계속 5명 이상이었는지로 따로 봅니다.`:''}</div>
+<div class="cal">${cal}</div><p class="hint">날짜를 누르면 휴원일로 빠지거나 다시 들어갑니다. 빨간 날은 5명이 안 된 날입니다.</p>`;
+document.querySelectorAll('.cal [data-d]').forEach(el=>{const t=()=>{const dd=+el.dataset.d;st.closed.has(dd)?st.closed.delete(dd):st.closed.add(dd);calc()};el.onclick=t;el.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();t()}}})}
+[{name:'정규 강사 1',days:[1,2,3,4,5,6]},{name:'정규 강사 2',days:[1,2,3,4,5,6]},{name:'정규 강사 3',days:[1,2,3,4,5,6]},{name:'파트 강사 1',kind:'파트',days:[1,3,5]},{name:'파트 강사 2',kind:'파트',days:[2,4,6]},{name:'주말 조교',kind:'조교',days:[6]}].forEach(p=>st.people.push(Object.assign({id:++uid,kind:'정규',family:false},p)));
+render();
+</script>
+</body>
+</html>

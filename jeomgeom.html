@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="근로계약서부터 임금대장까지, 사장님이 혼자 점검할 수 있게 정리했습니다. 노무법인 시너지">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="노무법인 시너지">
+<meta property="og:title" content="노동청이 오면 먼저 보는 것, 미리 점검하세요">
+<meta property="og:description" content="근로계약서부터 임금대장까지, 사장님이 혼자 점검할 수 있게 정리했습니다. 노무법인 시너지">
+<meta property="og:url" content="https://guide.snghr.com/jeomgeom">
+<meta property="og:image" content="https://guide.snghr.com/og.png">
+<style>[hidden]{display:none!important}</style>
+<title>우리 가게 노동청 자가점검</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 레이아웃: 폰 한 줄 기둥. 위에 붙는 진행 막대 → 직원 수 고르기 → 질문 카드 → 손볼 곳 결과 → 상담 */
+:root{
+  --navy:#14284B;        /* 주색 · 브랜드 딥네이비 */
+  --coral:#FF6A3D;       /* 강조 · 브랜드 코랄 */
+  --bg:#F3F5F9;          /* 바탕 · 네이비 쪽으로 기운 회색 */
+  --surface:#FFFFFF;
+  --ink:#16233A;
+  --sub:#5B6B82;
+  --line:#DCE3EE;
+  --soft:#E9EEF6;
+  --coral-soft:#FFEDE6;
+  --good:#12A06B; --good-soft:#E7F6EF;
+  --bar:#14284B; --bar-ink:#FFFFFF;
+  --font:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1524; --surface:#172238; --ink:#E7ECF5; --sub:#9AA8BE; --line:#2A3A57; --soft:#1F2D48;
+  --coral:#FF7A52; --coral-soft:#3A2420; --good:#3CC48F; --good-soft:#163428;
+  --navy:#9DB6E8; --bar:#0A1120; --bar-ink:#E7ECF5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1524; --surface:#172238; --ink:#E7ECF5; --sub:#9AA8BE; --line:#2A3A57; --soft:#1F2D48;
+  --coral:#FF7A52; --coral-soft:#3A2420; --good:#3CC48F; --good-soft:#163428;
+  --navy:#9DB6E8; --bar:#0A1120; --bar-ink:#E7ECF5; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bar)}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+/* 머리 */
+.hero{background:var(--bar);color:var(--bar-ink)}
+.hero .wrap{padding-block:36px 28px}
+.eyebrow{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:#fff;background:var(--coral);border-radius:999px;padding:3px 11px}
+h1{font-size:30px;line-height:1.25;font-weight:900;letter-spacing:-.03em;margin:12px 0 10px;text-wrap:balance}
+.hero p{margin:0;font-size:15.5px;opacity:.86;max-width:32em}
+
+/* 진행 막대 */
+.prog{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bar);color:var(--bar-ink);border-top:1px solid rgba(255,255,255,.08)}
+.prog .wrap{padding-block:10px 12px;display:flex;align-items:center;gap:12px}
+.prog .track{flex:1;height:8px;border-radius:99px;background:rgba(255,255,255,.16);overflow:hidden}
+.prog .fill{height:100%;width:0;background:var(--coral);border-radius:99px;transition:width .25s ease}
+.prog .txt{font-size:13px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.prog .txt b{color:var(--coral);font-weight:700}
+
+main .wrap{padding-block:22px 40px;display:flex;flex-direction:column;gap:26px}
+h2{font-size:19px;font-weight:900;letter-spacing:-.02em;margin:0 0 4px;text-wrap:balance}
+.lead{margin:0 0 12px;color:var(--sub);font-size:14.5px}
+
+/* 직원 수 */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.seg button{font:inherit;font-size:15px;font-weight:700;padding:14px 6px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+.seg button small{display:block;font-size:12px;font-weight:500;color:var(--sub)}
+.seg button[aria-pressed="true"]{border-color:var(--navy);background:var(--navy);color:var(--bg)}
+.seg button[aria-pressed="true"] small{color:var(--bg);opacity:.8}
+details.howto{margin-top:10px;font-size:14px;color:var(--sub)}
+details.howto summary{cursor:pointer;color:var(--ink);font-weight:500}
+details.howto p{margin:6px 0 0}
+
+/* 질문 */
+.group{display:flex;flex-direction:column;gap:10px}
+.ghead{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.ghead .who{font-size:12.5px;font-weight:700;color:var(--coral);border:1.5px solid var(--coral);border-radius:999px;padding:1px 9px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 16px 14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.q.no{border-color:var(--coral);box-shadow:inset 4px 0 0 var(--coral)}
+.q .t{font-size:16.5px;font-weight:700;line-height:1.45;margin:0}
+.q .s{font-size:14px;color:var(--sub);margin:-4px 0 0}
+.q .law{align-self:flex-start;font-size:12px;color:var(--sub);background:var(--soft);border-radius:6px;padding:1px 8px;font-variant-numeric:tabular-nums}
+.ans{display:flex;gap:6px}
+.ans button{flex:1;font:inherit;font-size:15px;font-weight:700;padding:10px 4px;border-radius:10px;border:1.5px solid var(--line);background:transparent;color:var(--ink);cursor:pointer}
+.ans button.na{flex:.8;font-weight:500;font-size:14px;color:var(--sub)}
+.ans button[aria-pressed="true"][data-v="y"]{background:var(--good-soft);border-color:var(--good);color:var(--good)}
+.ans button[aria-pressed="true"][data-v="n"]{background:var(--coral);border-color:var(--coral);color:#fff}
+.ans button[aria-pressed="true"][data-v="x"]{background:var(--soft);border-color:var(--soft);color:var(--ink)}
+.fix{font-size:14.5px;background:var(--coral-soft);border-radius:10px;padding:9px 12px;margin:0}
+.fix b{color:var(--coral)}
+
+/* 결과 */
+.result{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px 18px;display:flex;flex-direction:column;gap:12px}
+.score{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.score .n{font-size:44px;font-weight:900;line-height:1;color:var(--coral);font-variant-numeric:tabular-nums}
+.score .n.zero{color:var(--good)}
+.score .l{font-size:16px;font-weight:700}
+.result ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:4px;font-size:15px}
+.result .note{font-size:14px;color:var(--sub);margin:0}
+.btn{display:block;text-align:center;font:inherit;font-size:16px;font-weight:700;padding:15px;border-radius:999px;border:0;cursor:pointer;text-decoration:none}
+.btn.main{background:var(--coral);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btns{display:flex;flex-direction:column;gap:8px}
+.toast{font-size:13.5px;color:var(--good);text-align:center;min-height:1.2em;margin:0}
+.copybox{width:100%;min-height:120px;font:inherit;font-size:13.5px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:10px}
+
+/* 연락처 */
+.contact{border-top:1px solid var(--line);padding-top:18px;font-size:14px;color:var(--sub);display:flex;flex-direction:column;gap:6px}
+.contact .name{color:var(--ink);font-weight:700;font-size:15px}
+.tel{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tel span{font-size:18px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;user-select:all}
+.tel button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:3px 10px;cursor:pointer}
+.reset{align-self:flex-start;font:inherit;font-size:13px;background:none;border:0;color:var(--sub);text-decoration:underline;cursor:pointer;padding:0}
+button:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.prog .fill{transition:none}}
+</style>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="직원 수를 고르고 예·아니오로 답하면 손볼 곳만 남겨 드립니다. 이인재 노무사">
+
+
+
+
+<header class="hero"><div class="wrap">
+  <span class="eyebrow">사장님 자료 · 점검</span>
+  <h1>우리 가게<br>노동청 자가점검</h1>
+  <p>직원 수를 고르고 질문마다 예·아니오를 눌러 주세요. 손볼 곳만 맨 아래에 남겨 드립니다. 3분이면 끝나요.</p>
+</div></header>
+
+<div class="prog" aria-live="polite"><div class="wrap">
+  <div class="track"><div class="fill" id="fill"></div></div>
+  <div class="txt" id="progTxt">0 / 0 답함</div>
+</div></div>
+
+<main><div class="wrap">
+
+  <section>
+    <h2>직원이 몇 명인가요?</h2>
+    <p class="lead">고르는 대로 점검 항목이 달라져요.</p>
+    <div class="seg" role="group" aria-label="직원 수">
+      <button type="button" id="sz1" data-size="1">1~4명<small>기본 8개</small></button>
+      <button type="button" id="sz5" data-size="5">5~9명<small>+4개</small></button>
+      <button type="button" id="sz10" data-size="10">10명 이상<small>+1개</small></button>
+    </div>
+    <details class="howto"><summary>직원 수는 이렇게 셉니다</summary>
+      <p>알바와 단시간 직원까지 모두 셉니다. 최근 한 달 동안 일한 사람을 날짜마다 더해 일한 날수로 나눈 평균으로 봐요(근로기준법 시행령 제7조의2).</p>
+    </details>
+  </section>
+
+  <div id="groups"></div>
+
+  <section class="result" id="result">
+    <div class="score"><span class="n" id="resN">0</span><span class="l" id="resL">손볼 곳</span></div>
+    <p class="note" id="resNote"></p>
+    <ul id="resList"></ul>
+    <div class="btns">
+      <a class="btn main" id="kakao" href="https://open.kakao.com/o/soKDIQPh" target="_blank" rel="noopener">상담 카톡으로 물어보기</a>
+      <button type="button" class="btn ghost" id="copyBtn">점검 결과 복사하기</button>
+    </div>
+    <p class="toast" id="toast"></p>
+    <textarea class="copybox" id="copyBox" hidden readonly aria-label="복사할 점검 결과"></textarea>
+    <p class="note">결과를 복사해 상담 카톡에 붙여 넣으시면 처음부터 다시 설명하지 않으셔도 돼요. 이 점검은 기본 항목만 봅니다. 가게 사정에 따라 따로 볼 것이 있을 수 있어요.</p>
+    <button type="button" class="reset" id="resetBtn">답 모두 지우기</button>
+  </section>
+
+  <footer class="contact">
+    <div class="name">이인재 노무사 · 노무법인 시너지</div>
+    <div class="tel"><span id="telNo">010-2969-3740</span><button type="button" id="telCopy">번호 복사</button></div>
+    <div>문자 먼저 주셔도 돼요.</div>
+    <div>기준 2026년 10월 · 근거 근로기준법·최저임금법·퇴직급여법·각 보험법</div>
+  </footer>
+
+</div></main>
+
+<script>
+(function(){
+  var Q = [
+    {id:"a1",g:"a",t:"근로계약서를 써서 직원에게 한 부 줬나요?",s:"알바는 근무 요일과 요일별 시간까지 적어야 해요.",law:"근기법 §17 · 기간제법 §17",fix:"지금이라도 써서 한 부 건네세요. 알바는 요일과 시간을 꼭 적으세요."},
+    {id:"a2",g:"a",t:"시급이 최저임금 이상인가요?",s:"2026년 최저임금은 시간당 10,320원이에요.",law:"최저임금법",fix:"시급부터 맞추세요. 모자란 임금은 직원이 3년 안에 청구할 수 있어요."},
+    {id:"a3",g:"a",t:"주 15시간 이상 일하는 직원에게 주휴수당을 주나요?",s:"15시간이 안 되는 직원만 있다면 「해당 없음」을 눌러 주세요.",law:"근기법 §55① · §18③",na:1,fix:"근무표로 주 15시간이 넘는지부터 확인하세요."},
+    {id:"a4",g:"a",t:"매달 정한 날짜에 월급을 주고, 그때마다 임금명세서를 주나요?",law:"근기법 §43② · §48②",fix:"임금명세서에는 항목별 금액과 계산 방법이 들어가야 해요."},
+    {id:"a5",g:"a",t:"그만둔 직원의 임금과 퇴직금을 14일 안에 정산하나요?",s:"퇴사자가 없었다면 「해당 없음」.",law:"근기법 §36 · 퇴직급여법 §9",na:1,fix:"14일을 넘기려면 직원과 합의해 날짜를 미뤄야 해요."},
+    {id:"a6",g:"a",t:"해고할 때 30일 전에 예고하나요?",s:"해고한 적이 없다면 「해당 없음」.",law:"근기법 §26",na:1,fix:"예고하지 못하면 30일분 통상임금을 줘야 해요."},
+    {id:"a7",g:"a",t:"4대보험 취득신고를 기한 안에 하나요?",s:"건강보험은 14일 안, 연금·고용·산재는 다음 달 15일까지예요.",law:"각 보험법",fix:"늦었다면 지금이라도 신고하세요."},
+    {id:"a8",g:"a",t:"18세 미만 직원의 가족관계증명서와 부모 동의서를 가게에 두었나요?",s:"18세 미만 직원이 없다면 「해당 없음」.",law:"근기법 §66",na:1,fix:"두 서류를 받아 가게에 보관하세요."},
+    {id:"b1",g:"b",t:"연장·야간·휴일에 일하면 50%를 더 주나요?",s:"그런 근무가 없다면 「해당 없음」.",law:"근기법 §56",na:1,fix:"5명 이상 가게는 그 시간을 1.5배로 계산해야 해요."},
+    {id:"b2",g:"b",t:"연차휴가를 주나요?",law:"근기법 §60",fix:"1년에 80% 이상 출근한 직원에게는 15일이 생겨요."},
+    {id:"b3",g:"b",t:"해고할 때 정당한 이유가 있고, 사유와 날짜를 서면으로 알리나요?",s:"해고한 적이 없다면 「해당 없음」.",law:"근기법 §23① · §27",na:1,fix:"서면으로 알리지 않은 해고는 효력이 없어요."},
+    {id:"b4",g:"b",t:"직장 내 괴롭힘을 금지하고, 신고가 들어오면 조치하고 있나요?",law:"근기법 §76의2",fix:"신고가 오면 바로 사실을 확인하고 피해 직원을 보호해야 해요."},
+    {id:"c1",g:"c",t:"취업규칙을 만들어 노동청에 신고했나요?",law:"근기법 §93",fix:"10명 이상 가게는 취업규칙을 만들어 신고해야 해요."}
+  ];
+  var G = {
+    a:{h:"직원이 1명이라도 있으면",who:"모든 가게",min:1},
+    b:{h:"직원이 5명 이상이면 추가로",who:"5명 이상",min:5},
+    c:{h:"직원이 10명 이상이면",who:"10명 이상",min:10}
+  };
+  var SIZE_LABEL = {"1":"1~4명","5":"5~9명","10":"10명 이상"};
+  var KEY = "jg-nodong-v1";
+  var st = {size:"1",a:{}};
+  try{ var raw = localStorage.getItem(KEY); if(raw){ var p = JSON.parse(raw); if(p && p.a){ st = p; } } }catch(e){}
+  function save(){ try{ localStorage.setItem(KEY, JSON.stringify(st)); }catch(e){} }
+
+  var $ = function(id){ return document.getElementById(id); };
+  var groupsEl = $("groups");
+
+  // 질문 그리기
+  ["a","b","c"].forEach(function(g){
+    var sec = document.createElement("section");
+    sec.className = "group"; sec.id = "grp-"+g;
+    sec.innerHTML = '<div class="ghead"><h2>'+G[g].h+'</h2><span class="who">'+G[g].who+'</span></div>';
+    Q.filter(function(q){ return q.g===g; }).forEach(function(q){
+      var d = document.createElement("div");
+      d.className = "q"; d.id = "q-"+q.id;
+      d.innerHTML =
+        '<p class="t">'+q.t+'</p>'+
+        (q.s ? '<p class="s">'+q.s+'</p>' : '')+
+        '<span class="law">'+q.law+'</span>'+
+        '<div class="ans" role="group" aria-label="답">'+
+          '<button type="button" id="'+q.id+'-y" data-q="'+q.id+'" data-v="y">예</button>'+
+          '<button type="button" id="'+q.id+'-n" data-q="'+q.id+'" data-v="n">아니오</button>'+
+          (q.na ? '<button type="button" class="na" id="'+q.id+'-x" data-q="'+q.id+'" data-v="x">해당 없음</button>' : '')+
+        '</div>'+
+        '<p class="fix" hidden><b>손볼 곳</b> '+q.fix+'</p>';
+      sec.appendChild(d);
+    });
+    groupsEl.appendChild(sec);
+  });
+
+  function visible(){ var n = +st.size; return Q.filter(function(q){ return n >= G[q.g].min; }); }
+
+  function render(){
+    document.querySelectorAll(".seg button").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.size===st.size ? "true":"false"); });
+    ["a","b","c"].forEach(function(g){ $("grp-"+g).hidden = +st.size < G[g].min; });
+    Q.forEach(function(q){
+      var v = st.a[q.id], card = $("q-"+q.id);
+      card.classList.toggle("no", v==="n");
+      card.querySelector(".fix").hidden = v!=="n";
+      card.querySelectorAll(".ans button").forEach(function(b){ b.setAttribute("aria-pressed", b.dataset.v===v ? "true":"false"); });
+    });
+    var vis = visible(), done = vis.filter(function(q){ return st.a[q.id]; }).length;
+    var bad = vis.filter(function(q){ return st.a[q.id]==="n"; });
+    $("fill").style.width = (vis.length ? done/vis.length*100 : 0) + "%";
+    $("progTxt").innerHTML = done+" / "+vis.length+" 답함 · 손볼 곳 <b>"+bad.length+"</b>";
+    $("resN").textContent = bad.length;
+    $("resN").classList.toggle("zero", bad.length===0 && done===vis.length);
+    $("resL").textContent = "손볼 곳";
+    var left = vis.length - done;
+    if(done===0){ $("resNote").textContent = "위 질문에 답하시면 여기에 손볼 곳이 모입니다."; }
+    else if(left>0){ $("resNote").textContent = "아직 "+left+"개 남았어요."; }
+    else if(bad.length===0){ $("resNote").textContent = "지금 답하신 기준으로는 손볼 곳이 없어요."; }
+    else { $("resNote").textContent = "「아니오」라고 답하신 곳이에요. 하나씩 손보시면 됩니다."; }
+    var ul = $("resList"); ul.innerHTML = "";
+    bad.forEach(function(q){ var li = document.createElement("li"); li.textContent = q.t.replace(/\?$/,""); ul.appendChild(li); });
+    $("copyBox").hidden = true;
+  }
+
+  function resultText(){
+    var vis = visible(), bad = vis.filter(function(q){ return st.a[q.id]==="n"; });
+    var done = vis.filter(function(q){ return st.a[q.id]; }).length;
+    var lines = ["[우리 가게 노동청 자가점검 결과]","직원 수: "+SIZE_LABEL[st.size],"답한 항목: "+done+" / "+vis.length,"손볼 곳: "+bad.length+"개"];
+    bad.forEach(function(q){ lines.push("- "+q.t.replace(/\?$/,"")); });
+    return lines.join("\n");
+  }
+
+  document.addEventListener("click", function(e){
+    var b = e.target.closest("button"); if(!b) return;
+    if(b.dataset.size){ st.size = b.dataset.size; save(); render(); return; }
+    if(b.dataset.q){ var id = b.dataset.q; st.a[id] = st.a[id]===b.dataset.v ? undefined : b.dataset.v; if(!st.a[id]) delete st.a[id]; save(); render(); return; }
+  });
+
+  $("copyBtn").addEventListener("click", function(){
+    var txt = resultText(), box = $("copyBox");
+    function fallback(){ box.value = txt; box.hidden = false; box.focus(); box.select(); $("toast").textContent = "아래 글을 길게 눌러 복사해 주세요."; }
+    try{
+      navigator.clipboard.writeText(txt).then(function(){ $("toast").textContent = "복사했어요. 상담 카톡에 붙여 넣어 주세요."; }, fallback);
+    }catch(err){ fallback(); }
+  });
+  $("telCopy").addEventListener("click", function(){
+    var t = $("telNo").textContent;
+    try{ navigator.clipboard.writeText(t).then(function(){ $("telCopy").textContent = "복사됨"; }, function(){}); }catch(err){}
+  });
+  $("resetBtn").addEventListener("click", function(){ st.a = {}; save(); render(); });
+
+  render();
+})();
+</script>
+</body>
+</html>

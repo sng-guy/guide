@@ -1,0 +1,323 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="월급을 넣으면 4대보험 회사 부담까지 더한 실제 인건비를 계산해 드려요. 노무법인 시너지">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="노무법인 시너지">
+<meta property="og:title" content="월급 200만 원이면 사장님 돈은 얼마 나갈까">
+<meta property="og:description" content="월급을 넣으면 4대보험 회사 부담까지 더한 실제 인건비를 계산해 드려요. 노무법인 시너지">
+<meta property="og:url" content="https://guide.snghr.com/ingeonbi">
+<meta property="og:image" content="https://guide.snghr.com/og.png">
+<style>[hidden]{display:none!important}</style>
+<title>월급 주면 실제로 나가는 돈</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap">
+<style>
+/* 레이아웃: 폰 한 줄 기둥. 입력 카드 → 큰 결과 숫자 + 월급 대비 막대 → 항목별 내역 → 같이 알아 둘 것 → 상담 */
+:root{
+  --navy:#14284B;        /* 주색 · 브랜드 딥네이비 */
+  --coral:#FF6A3D;       /* 강조 · 브랜드 코랄 */
+  --bg:#F3F5F9;
+  --surface:#FFFFFF;
+  --ink:#16233A;
+  --sub:#5B6B82;
+  --line:#DCE3EE;
+  --soft:#E9EEF6;
+  --coral-soft:#FFEDE6;
+  --wage:#14284B;        /* 막대: 월급 */
+  --ins:#FF6A3D;         /* 막대: 4대보험 회사 몫 */
+  --ret:#F5B38F;         /* 막대: 퇴직금 적립 */
+  --bar:#14284B; --bar-ink:#FFFFFF;
+  --font:"Pretendard","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1524; --surface:#172238; --ink:#E7ECF5; --sub:#9AA8BE; --line:#2A3A57; --soft:#1F2D48;
+  --coral:#FF7A52; --coral-soft:#3A2420; --navy:#9DB6E8;
+  --wage:#5F7FB8; --ins:#FF7A52; --ret:#B9765A; --bar:#0A1120; --bar-ink:#E7ECF5; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1524; --surface:#172238; --ink:#E7ECF5; --sub:#9AA8BE; --line:#2A3A57; --soft:#1F2D48;
+  --coral:#FF7A52; --coral-soft:#3A2420; --navy:#9DB6E8;
+  --wage:#5F7FB8; --ins:#FF7A52; --ret:#B9765A; --bar:#0A1120; --bar-ink:#E7ECF5; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bar)}
+.wrap{max-width:640px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+
+.hero{background:var(--bar);color:var(--bar-ink)}
+.hero .wrap{padding-block:36px 30px}
+.eyebrow{display:inline-block;font-size:12.5px;font-weight:700;letter-spacing:.06em;color:#fff;background:var(--coral);border-radius:999px;padding:3px 11px}
+h1{font-size:30px;line-height:1.25;font-weight:900;letter-spacing:-.03em;margin:12px 0 10px;text-wrap:balance}
+.hero p{margin:0;font-size:15.5px;opacity:.86;max-width:32em}
+
+main .wrap{padding-block:22px 40px;display:flex;flex-direction:column;gap:22px}
+h2{font-size:19px;font-weight:900;letter-spacing:-.02em;margin:0;text-wrap:balance}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px;min-width:0}
+
+/* 입력 */
+.field{display:flex;flex-direction:column;gap:6px}
+.field label{font-size:15px;font-weight:700}
+.field .hint{font-size:13.5px;color:var(--sub);margin:0}
+.inbox{display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;background:var(--bg);padding:0 14px}
+.inbox:focus-within{border-color:var(--coral)}
+.inbox input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:22px;font-weight:700;padding:11px 0;font-variant-numeric:tabular-nums;outline:none}
+.inbox span{color:var(--sub);font-size:15px;font-weight:500;white-space:nowrap}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.row2 > *{min-width:0}
+.row2 .inbox input{font-size:18px}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{font:inherit;font-size:13.5px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:4px 12px;cursor:pointer}
+.example{font-size:12.5px;color:var(--sub);margin:0}
+
+/* 결과 */
+.big{display:flex;flex-direction:column;gap:2px}
+.big .lab{font-size:14px;color:var(--sub);font-weight:500}
+.big .num{font-size:40px;font-weight:900;line-height:1.15;letter-spacing:-.02em;color:var(--coral);font-variant-numeric:tabular-nums}
+.big .num small{font-size:20px;font-weight:700;margin-left:2px}
+.big .ratio{font-size:15px;font-weight:700}
+.stack{display:flex;height:16px;border-radius:99px;overflow:hidden;background:var(--soft)}
+.stack i{display:block;height:100%}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--sub)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px;background:var(--c)}
+.multi{font-size:15px;background:var(--soft);border-radius:10px;padding:10px 12px;font-variant-numeric:tabular-nums}
+.multi b{color:var(--coral)}
+
+/* 내역 */
+table.bd{width:100%;border-collapse:collapse;font-size:14.5px;font-variant-numeric:tabular-nums}
+table.bd td{padding:9px 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.bd td.r{text-align:right;font-weight:700;white-space:nowrap;padding-left:10px}
+table.bd .k{font-weight:700}
+table.bd .rate{display:block;font-size:12.5px;color:var(--sub);font-weight:400}
+table.bd tr.sum td{border-bottom:0;font-size:16px;padding-top:12px}
+table.bd tr.sum td.r{color:var(--coral)}
+table.bd tr.muted td.r{color:var(--sub);font-weight:500}
+.tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:5px;padding:0 6px;margin-left:4px;vertical-align:1px}
+.tag.ins{background:var(--coral-soft);color:var(--coral)}
+.tag.ret{background:var(--soft);color:var(--sub)}
+
+.notes ul{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.btn{display:block;text-align:center;font:inherit;font-size:16px;font-weight:700;padding:15px;border-radius:999px;border:0;cursor:pointer;text-decoration:none}
+.btn.main{background:var(--coral);color:#fff}
+.btn.ghost{background:transparent;color:var(--ink);border:1.5px solid var(--line)}
+.btns{display:flex;flex-direction:column;gap:8px}
+.toast{font-size:13.5px;color:var(--coral);text-align:center;margin:0}
+.toast:empty{display:none}
+.copybox{width:100%;min-height:150px;font:inherit;font-size:13.5px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);padding:10px}
+.note{font-size:14px;color:var(--sub);margin:0}
+
+.contact{border-top:1px solid var(--line);padding-top:18px;font-size:14px;color:var(--sub);display:flex;flex-direction:column;gap:6px}
+.contact .name{color:var(--ink);font-weight:700;font-size:15px}
+.tel{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tel span{font-size:18px;font-weight:700;color:var(--ink);font-variant-numeric:tabular-nums;user-select:all}
+.tel button{font:inherit;font-size:13px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:8px;padding:3px 10px;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--coral);outline-offset:2px}
+@media (max-width:420px){.row2{grid-template-columns:1fr}.big .num{font-size:34px}}
+</style>
+</head>
+<body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="월급을 넣으면 회사 몫 4대보험과 퇴직금 적립까지 더한 한 달 실제 인건비가 나옵니다. 2026년 요율. 이인재 노무사">
+
+
+
+
+<header class="hero"><div class="wrap">
+  <span class="eyebrow">사장님 자료 · 인건비</span>
+  <h1>월급 주면<br>실제로 나가는 돈</h1>
+  <p>월급만 인건비가 아니에요. 회사 몫 4대보험과 퇴직금 적립까지 더한 한 달 비용을 계산해 드려요. 2026년 요율로 계산합니다.</p>
+</div></header>
+
+<main><div class="wrap">
+
+  <section class="card" aria-label="입력">
+    <div class="field">
+      <label for="wage">직원 한 명 월급 (세전)</label>
+      <div class="inbox"><input id="wage" inputmode="numeric" autocomplete="off" value="2,500,000"><span>원</span></div>
+      <div class="chips" id="chips">
+        <button type="button" data-w="2156880">최저임금 월급</button>
+        <button type="button" data-w="2500000">250만</button>
+        <button type="button" data-w="3000000">300만</button>
+        <button type="button" data-w="4000000">400만</button>
+      </div>
+      <p class="example" id="exNote">처음 숫자 250만 원은 예시예요. 우리 직원 월급으로 바꿔 보세요.</p>
+    </div>
+    <div class="row2">
+      <div class="field">
+        <label for="nontax">그중 비과세 수당</label>
+        <div class="inbox"><input id="nontax" inputmode="numeric" autocomplete="off" value="0"><span>원</span></div>
+        <p class="hint">식대 등. 보험료 계산에서 빠져요. 모르면 0.</p>
+      </div>
+      <div class="field">
+        <label for="heads">같은 월급 직원 수</label>
+        <div class="inbox"><input id="heads" inputmode="numeric" autocomplete="off" value="1"><span>명</span></div>
+        <p class="hint">여러 명이면 합계도 보여 드려요.</p>
+      </div>
+    </div>
+    <div class="field">
+      <label for="sanjae">산재보험 업종 요율 (모르면 비워 두세요)</label>
+      <div class="inbox"><input id="sanjae" inputmode="decimal" autocomplete="off" placeholder="예: 0.7" value=""><span>%</span></div>
+      <p class="hint">업종마다 달라요. 근로복지공단 고지서나 「2026년 사업종류별 산재보험료율」에서 확인할 수 있어요. 출퇴근 재해 요율 0.06%는 자동으로 더합니다.</p>
+    </div>
+  </section>
+
+  <section class="card" aria-live="polite">
+    <div class="big">
+      <span class="lab">직원 한 명에게 한 달 실제로 드는 돈</span>
+      <span class="num" id="total">0<small>원</small></span>
+      <span class="ratio" id="ratio"></span>
+    </div>
+    <div class="stack" aria-hidden="true"><i id="sW" style="background:var(--wage)"></i><i id="sI" style="background:var(--ins)"></i><i id="sR" style="background:var(--ret)"></i></div>
+    <div class="legend"><span style="--c:var(--wage)">월급</span><span style="--c:var(--ins)">회사 몫 4대보험</span><span style="--c:var(--ret)">퇴직금 적립</span></div>
+    <div class="multi" id="multi"></div>
+
+    <h2>무엇이 더해지나</h2>
+    <table class="bd"><tbody id="bdBody"></tbody></table>
+    <p class="note" id="sanjaeNote"></p>
+  </section>
+
+  <section class="card">
+    <div class="btns">
+      <a class="btn main" href="https://open.kakao.com/o/soKDIQPh" target="_blank" rel="noopener">우리 가게 인건비 같이 보기 (상담 카톡)</a>
+      <button type="button" class="btn ghost" id="copyBtn">계산 결과 복사하기</button>
+    </div>
+    <p class="toast" id="toast"></p>
+    <textarea class="copybox" id="copyBox" hidden readonly aria-label="복사할 계산 결과"></textarea>
+    <p class="note">결과를 복사해 상담 카톡에 붙여 넣으시면 처음부터 다시 설명하지 않으셔도 돼요.</p>
+  </section>
+
+  <section class="card notes">
+    <h2>같이 알아 둘 것</h2>
+    <ul>
+      <li>퇴직금은 1년 이상, 4주 평균 주 15시간 이상 일한 직원에게 생겨요. 매달 나가는 돈은 아니지만 미리 쌓아 두셔야 할 돈이에요.</li>
+      <li>월 60시간(주 15시간) 미만으로 일하는 직원은 국민연금·건강보험이 빠질 수 있어요. 산재보험은 한 명이라도 가입해요.</li>
+      <li>국민연금은 기준소득월액 41만~659만 원 사이에서 계산해요(2026년 7월~2027년 6월).</li>
+      <li>월급을 어떻게 구성하느냐(비과세 수당 등)에 따라 보험료 기준액이 달라질 수 있어요.</li>
+      <li>직원 5명 이상이면 연차수당, 연장·야간·휴일 가산수당도 인건비에 들어가요.</li>
+      <li>작은 사업장의 새로 가입하는 직원은 두루누리로 고용보험료 일부를 지원받을 수 있어요(요건은 공고 확인).</li>
+      <li>원 단위 끝자리는 실제 고지 금액과 조금 다를 수 있는 어림셈이에요.</li>
+    </ul>
+  </section>
+
+  <footer class="contact">
+    <div class="name">이인재 노무사 · 노무법인 시너지</div>
+    <div class="tel"><span id="telNo">010-2969-3740</span><button type="button" id="telCopy">번호 복사</button></div>
+    <div>문자 먼저 주셔도 돼요.</div>
+    <div>기준 2026년 요율 · 근거 2026 보험료율 고시·각 공단 편람, 퇴직급여법 제8조</div>
+  </footer>
+
+</div></main>
+
+<script>
+(function(){
+  // 2026년 요율 (정본: ★03 참고자료 「★보험료율·기준금액 이력.md」)
+  var R = {
+    pension:0.0475,          // 국민연금 사업주 4.75%
+    pMin:410000, pMax:6590000, // 기준소득월액 2026.7.~2027.6.
+    health:0.03595,          // 건강보험 사업주 3.595%
+    ltcOfHealth:0.9448/7.19, // 장기요양 = 건강보험료 × 13.14%
+    unemp:0.009,             // 고용보험 실업급여 사업주 0.9%
+    stab:0.0025,             // 고용안정·직업능력개발 150명 미만 0.25%
+    commute:0.0006           // 출퇴근 재해 0.06%
+  };
+  var $ = function(id){ return document.getElementById(id); };
+  var KEY = "jg-ingeonbi-v1";
+  function num(s){ var n = parseFloat(String(s).replace(/[^0-9.]/g,"")); return isFinite(n) ? n : 0; }
+  function won(n){ return Math.round(n).toLocaleString("ko-KR"); }
+  function fmtInput(el){ var v = Math.round(num(el.value)); el.value = v ? v.toLocaleString("ko-KR") : (el.id==="heads" ? "" : "0"); }
+
+  try{ var s = JSON.parse(localStorage.getItem(KEY)||"null"); if(s){ ["wage","nontax","heads","sanjae"].forEach(function(k){ if(s[k]!=null) $(k).value = s[k]; }); } }catch(e){}
+
+  var last = null;
+  function calc(){
+    var wage = Math.max(0, num($("wage").value));
+    var nontax = Math.min(wage, Math.max(0, num($("nontax").value)));
+    var heads = Math.max(1, Math.round(num($("heads").value)) || 1);
+    var sjRaw = $("sanjae").value.trim();
+    var sj = sjRaw === "" ? null : Math.max(0, num(sjRaw))/100;
+    var base = wage - nontax;
+    var pBase = base > 0 ? Math.min(Math.max(base, R.pMin), R.pMax) : 0;
+    var it = {
+      pension: pBase * R.pension,
+      health: base * R.health
+    };
+    it.ltc = it.health * R.ltcOfHealth;
+    it.unemp = base * R.unemp;
+    it.stab = base * R.stab;
+    it.sanjae = sj === null ? null : base * (sj + R.commute);
+    it.ret = wage / 12;
+    var ins = it.pension + it.health + it.ltc + it.unemp + it.stab + (it.sanjae||0);
+    var total = wage + ins + it.ret;
+    last = {wage:wage,nontax:nontax,heads:heads,sj:sj,base:base,pBase:pBase,it:it,ins:ins,total:total};
+
+    $("total").innerHTML = won(total) + "<small>원</small>";
+    $("ratio").textContent = wage > 0 ? "월급보다 " + won(total - wage) + "원 더, 월급의 " + (total/wage).toFixed(2) + "배" : "";
+    var t = total || 1;
+    $("sW").style.width = (wage/t*100) + "%";
+    $("sI").style.width = (ins/t*100) + "%";
+    $("sR").style.width = (it.ret/t*100) + "%";
+    $("multi").innerHTML = heads > 1
+      ? "직원 " + heads + "명이면 한 달 <b>" + won(total*heads) + "원</b> · 1년 <b>" + won(total*heads*12) + "원</b>"
+      : "1년이면 <b>" + won(total*12) + "원</b>";
+
+    var rows = [
+      ["월급", "세전", wage, ""],
+      ["국민연금", base>0 && pBase!==base ? "4.75% · 기준 " + won(pBase) + "원으로 계산" : "4.75%", it.pension, "ins"],
+      ["건강보험", "3.595%", it.health, "ins"],
+      ["장기요양보험", "건강보험료 × 13.14%", it.ltc, "ins"],
+      ["고용보험(실업급여)", "0.9%", it.unemp, "ins"],
+      ["고용안정·직업능력개발", "0.25% (150명 미만)", it.stab, "ins"],
+      ["산재보험", sj===null ? "업종별 + 출퇴근 0.06%" : (sj*100).toFixed(2).replace(/\.?0+$/,"") + "% + 출퇴근 0.06%", it.sanjae, "ins"],
+      ["퇴직금 적립", "월급 ÷ 12", it.ret, "ret"]
+    ];
+    var html = "";
+    rows.forEach(function(r){
+      var tag = r[3]==="ins" ? '<span class="tag ins">회사 몫</span>' : r[3]==="ret" ? '<span class="tag ret">쌓아 둘 돈</span>' : "";
+      var val = r[2]===null ? "업종 확인" : won(r[2]) + "원";
+      html += '<tr' + (r[2]===null ? ' class="muted"' : '') + '><td><span class="k">' + r[0] + '</span>' + tag + '<span class="rate">' + r[1] + '</span></td><td class="r">' + val + '</td></tr>';
+    });
+    html += '<tr class="sum"><td><span class="k">합계' + (sj===null ? " (산재 제외)" : "") + '</span></td><td class="r">' + won(total) + '원</td></tr>';
+    $("bdBody").innerHTML = html;
+    $("sanjaeNote").textContent = sj===null ? "산재보험은 업종을 넣으면 합계에 더해져요. 비워 두면 빼고 계산합니다." : "";
+    $("exNote").hidden = num($("wage").value) !== 2500000;
+    $("copyBox").hidden = true;
+    try{ localStorage.setItem(KEY, JSON.stringify({wage:$("wage").value,nontax:$("nontax").value,heads:$("heads").value,sanjae:$("sanjae").value})); }catch(e){}
+  }
+
+  ["wage","nontax","heads","sanjae"].forEach(function(id){
+    var el = $(id);
+    el.addEventListener("input", calc);
+    if(id!=="sanjae") el.addEventListener("blur", function(){ fmtInput(el); calc(); });
+  });
+  $("chips").addEventListener("click", function(e){
+    var b = e.target.closest("button"); if(!b) return;
+    $("wage").value = Number(b.dataset.w).toLocaleString("ko-KR"); calc();
+  });
+
+  function resultText(){
+    var L = last, it = L.it;
+    var lines = ["[월급 주면 실제로 나가는 돈 · 2026년 요율]",
+      "월급(세전): " + won(L.wage) + "원" + (L.nontax ? " (비과세 " + won(L.nontax) + "원)" : ""),
+      "국민연금 " + won(it.pension) + " / 건강 " + won(it.health) + " / 장기요양 " + won(it.ltc),
+      "고용 " + won(it.unemp + it.stab) + " / 산재 " + (it.sanjae===null ? "업종 확인" : won(it.sanjae)),
+      "퇴직금 적립 " + won(it.ret),
+      "한 달 실제 비용: " + won(L.total) + "원" + (L.sj===null ? " (산재 제외)" : "")];
+    if(L.heads > 1) lines.push("직원 " + L.heads + "명: 한 달 " + won(L.total*L.heads) + "원");
+    return lines.join("\n");
+  }
+  $("copyBtn").addEventListener("click", function(){
+    var txt = resultText(), box = $("copyBox");
+    function fallback(){ box.value = txt; box.hidden = false; box.focus(); box.select(); $("toast").textContent = "아래 글을 길게 눌러 복사해 주세요."; }
+    try{ navigator.clipboard.writeText(txt).then(function(){ $("toast").textContent = "복사했어요. 상담 카톡에 붙여 넣어 주세요."; }, fallback); }catch(err){ fallback(); }
+  });
+  $("telCopy").addEventListener("click", function(){
+    try{ navigator.clipboard.writeText($("telNo").textContent).then(function(){ $("telCopy").textContent = "복사됨"; }, function(){}); }catch(err){}
+  });
+
+  calc();
+})();
+</script>
+</body>
+</html>
